@@ -11,7 +11,6 @@ const URL = "https://speller.yandex.net/services/spellservice.json/checkText"
 
 type Speller struct {
 	config Config
-	client http.Client
 }
 
 type Config struct {
@@ -30,7 +29,7 @@ type Response struct {
 }
 
 func NewWithConfig(config Config) *Speller {
-	return &Speller{config: config, client: http.Client{}}
+	return &Speller{config: config}
 }
 
 func New() *Speller {
