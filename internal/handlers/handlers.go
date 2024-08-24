@@ -22,16 +22,12 @@ var spellerCodes = map[int]string{
 func CreateNote(w http.ResponseWriter, r *http.Request) {
 	username := context.Get(r, "username").(string)
 	note := context.Get(r, "note").(string)
-	
     typos, err := speller.Text(note)
-    
     if len(typos) != 0 {
     	handleTypos(w, typos)
         return
     }
-    
 	err = database.CreateNote(username, note)
-	
 	if err != nil {
 		log.Errorf("Failed to create note for user %q: %v.", username, err)
 	} else {
@@ -43,11 +39,10 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 func ListNotes(w http.ResponseWriter, r *http.Request) {
 	username := context.Get(r, "username").(string)
 	notes, err := database.ListNotes(username)
-	
 	if err != nil {
 		log.Errorf("Failed to get notes from user %q: %v.", username, err)
 	} else {
-		helper.WriteResponse(w, models.Response{Code: http.StatusOK, User: username, Notes: notes})
+		helper.WriteResponse(w, models.Response{Code: http.StatusOK, User: username, Notes: &notes})
 	}
 }
 

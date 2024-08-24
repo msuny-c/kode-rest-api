@@ -8,7 +8,7 @@ type Response struct {
 	Code int `json:"code,omitempty"`
 	User string `json:"user,omitempty"`
 	Note string `json:"created_note,omitempty"`
-	Notes []string `json:"notes,omitempty"`
+	Notes *[]string `json:"notes,omitempty"`
 	Errors []Error `json:"errors,omitempty"`
 }
 
