@@ -23,7 +23,8 @@ func (amw *Authentication) Middleware(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 		} else {
 			log.Warnf("Unsuccessful authentication attempt from %s.", r.RemoteAddr)
-			helper.WriteError(w, models.ResponseError{Code: http.StatusUnauthorized, Message: "Unauthorized"})
+			errors := []models.Error{{Code: "UNAUTHORIZED", Message: "X-Session-Token is invalid"}}
+			helper.WriteError(w, models.ResponseError{Code: http.StatusUnauthorized, Errors: errors})
 		}
 	})
 }
@@ -37,8 +38,9 @@ func Notes(next http.Handler) http.Handler {
 		if r.Form.Has("note") {
 			next.ServeHTTP(w, r)
 		} else {
-			log.Infof("Required key \"note\" was not provided from %s.", r.RemoteAddr)
-			helper.WriteError(w, models.ResponseError{Code: http.StatusBadRequest, Message: "Required key 'note' was not provided"})
+			log.Infof("Required key 'note' was not provided from %s.", r.RemoteAddr)
+			errors := []models.Error{{Code: "BAD REQUEST", Message: "Required key 'note' was not provided"}}
+			helper.WriteError(w, models.ResponseError{Code: http.StatusBadRequest, Errors: errors})
 		}
 	})
 }

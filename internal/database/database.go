@@ -24,6 +24,8 @@ func ListNotes(username string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
+	
 	for rows.Next() {
 		var note string
 		rows.Scan(&note)

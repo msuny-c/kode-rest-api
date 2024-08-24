@@ -10,6 +10,7 @@ var url = "https://speller.yandex.net/services/spellservice.json/checkText"
 
 type Speller struct {
 	config Config
+	client http.Client
 }
 
 type Config struct {
@@ -27,12 +28,12 @@ type Response struct {
 	Word string `json:"word"`
 }
 
-func New() *Speller {
-	return &Speller{Config{Lang:"ru,en", Options:"0", Format:"plain"}}
+func NewWithConfig(config Config) *Speller {
+	return &Speller{config: config, client: http.Client{}}
 }
 
-func NewWithConfig(config Config) *Speller {
-	return &Speller{config: config}
+func New() *Speller {
+	return NewWithConfig(Config{Lang:"ru,en", Options:"0", Format:"plain"})
 }
 
 func (speller *Speller) Text(text string) ([]Response, error) {
@@ -41,11 +42,11 @@ func (speller *Speller) Text(text string) ([]Response, error) {
 		return nil, err
 	}
 	setupQuery(request, speller, text)
-	client := new(http.Client)
-	response, err := client.Do(request)
+	response, err := speller.client.Do(request)
 	if err != nil {
 		return nil, err
 	}
+	defer response.Body.Close()
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
