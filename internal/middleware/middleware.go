@@ -1,8 +1,11 @@
-package middleware 
+package middleware
 
 import (
 	"net/http"
+
 	"github.com/gorilla/context"
+	"github.com/msuny-c/kode-rest-api/internal/helper"
+	"github.com/msuny-c/kode-rest-api/internal/models"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -20,7 +23,7 @@ func (amw *Authentication) Middleware(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 		} else {
 			log.Warnf("Unsuccessful authentication attempt from %s.", r.RemoteAddr)
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			helper.WriteError(w, models.ResponseError{Code: http.StatusUnauthorized, Message: "Unauthorized"})
 		}
 	})
 }
@@ -35,7 +38,7 @@ func Notes(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 		} else {
 			log.Infof("Required key \"note\" was not provided from %s.", r.RemoteAddr)
-			http.Error(w, "Required key \"note\" was not provided.", http.StatusBadRequest)
+			helper.WriteError(w, models.ResponseError{Code: http.StatusBadRequest, Message: "Required key 'note' was not provided"})
 		}
 	})
 }

@@ -8,23 +8,19 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type DBinstance struct {
-	db *sql.DB
-}
+var database *sql.DB
 
-var DB DBinstance
-
-func (storage *DBinstance) CreateNote(username string, note string) error {
-	_, err := storage.db.Exec("INSERT INTO notes (note, username) VALUES ($1, $2)", note, username)
+func CreateNote(username string, note string) error {
+	_, err := database.Exec("INSERT INTO notes (note, username) VALUES ($1, $2)", note, username)
 	if err != nil {
 		log.Warnf("Couldn't add note to the database from user %q: %v", username, err)
 		return err
 	}
 	return nil
 }
-func (storage *DBinstance) ListNotes(username string) ([]string, error) {
+func ListNotes(username string) ([]string, error) {
 	var notes []string
-	rows, err := storage.db.Query("SELECT note FROM notes WHERE username = $1", username)
+	rows, err := database.Query("SELECT note FROM notes WHERE username = $1", username)
 	if err != nil {
 		return nil, err
 	}
@@ -51,5 +47,5 @@ func ConnectDB() {
 	if err != nil {
 		log.Fatalf("Failed to create required tables: %v", err)
 	}
-	DB = DBinstance{db: db}
+	database = db
 }
