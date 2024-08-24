@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"net/url"
 )
 
-var url = "https://speller.yandex.net/services/spellservice.json/checkText"
+const URL = "https://speller.yandex.net/services/spellservice.json/checkText"
 
 type Speller struct {
 	config Config
@@ -37,12 +38,9 @@ func New() *Speller {
 }
 
 func (speller *Speller) Text(text string) ([]Response, error) {
-	request, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-	setupQuery(request, speller, text)
-	response, err := speller.client.Do(request)
+	formData := url.Values{}
+	setupFormData(formData, speller, text)
+	response, err := http.PostForm(URL, formData)
 	if err != nil {
 		return nil, err
 	}
@@ -56,13 +54,11 @@ func (speller *Speller) Text(text string) ([]Response, error) {
 	return data, nil
 }
 
-func setupQuery(request *http.Request, speller *Speller, text string) {
-	query := request.URL.Query()
-	query.Add("lang", speller.config.Lang)
-	query.Add("options", speller.config.Options)
-	query.Add("format", speller.config.Format)
-	query.Add("text", text)
-	request.URL.RawQuery = query.Encode()
+func setupFormData(formData url.Values, speller *Speller, text string) {
+	formData.Add("text", text)
+	formData.Add("lang", speller.config.Lang)
+	formData.Add("options", speller.config.Options)
+	formData.Add("format", speller.config.Format)
 }
 
 

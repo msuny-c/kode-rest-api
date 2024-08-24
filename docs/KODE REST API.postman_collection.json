@@ -1,0 +1,589 @@
+{
+	"info": {
+		"_postman_id": "dcbe0177-acf3-4d3d-9e70-1448ca4a1f55",
+		"name": "KODE REST API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29215231"
+	},
+	"item": [
+		{
+			"name": "Добавить заметку",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"note\": \"Your note\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/notes",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"notes"
+					]
+				},
+				"description": "Добавить заметку. Текст заметки указывается в теле запроса параметром `note.` Для выполнения запроса требуется токен авторизации `X-Session-Token` (указывается в заголовке).\n\nУспешный запрос возвращает `200 OK` и в теле запроса имя пользователя и добавленную заметку."
+			},
+			"response": [
+				{
+					"name": "Корректный запрос",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Session-Token",
+								"value": "wn29ANSMq39",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"note\": \"Новая заметка\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/notes",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"notes"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 24 Aug 2024 15:55:00 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "79"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"user\": \"Alex\",\n    \"created_note\": \"Новая заметка\"\n}"
+				},
+				{
+					"name": "Нет \"note\" в теле",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Session-Token",
+								"value": "wn29ANSMq39",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/notes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notes"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 24 Aug 2024 16:04:23 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "120"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 400,\n    \"errors\": [\n        {\n            \"code\": \"BAD REQUEST\",\n            \"message\": \"Required key 'note' was not provided\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "Нет токена авторизации",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Session-Token",
+								"value": "wn29ANSMq39",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"note\": \"My note\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/notes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notes"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 24 Aug 2024 16:05:30 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "111"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 401,\n    \"errors\": [\n        {\n            \"code\": \"UNAUTHORIZED\",\n            \"message\": \"X-Session-Token is invalid\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "Ошибка в слове",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Session-Token",
+								"value": "wn29ANSMq39",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"note\": \"Керпич\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/notes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notes"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 24 Aug 2024 16:06:26 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "127"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 400,\n    \"errors\": [\n        {\n            \"code\": \"ERROR_UNKNOWN_WORD\",\n            \"message\": \"Spelling error in word: Керпич\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "Ошибка в нескольких словах",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Session-Token",
+								"value": "wn29ANSMq39",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"note\": \"Севодня былло жаарко\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/notes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notes"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 24 Aug 2024 16:08:01 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "317"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 400,\n    \"errors\": [\n        {\n            \"code\": \"ERROR_UNKNOWN_WORD\",\n            \"message\": \"Spelling error in word: Севодня\"\n        },\n        {\n            \"code\": \"ERROR_UNKNOWN_WORD\",\n            \"message\": \"Spelling error in word: былло\"\n        },\n        {\n            \"code\": \"ERROR_UNKNOWN_WORD\",\n            \"message\": \"Spelling error in word: жаарко\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "Неправильный токен авторизации",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Session-Token",
+								"value": "123",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"note\": \"Заметка\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/notes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notes"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 24 Aug 2024 16:08:49 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "111"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 401,\n    \"errors\": [\n        {\n            \"code\": \"UNAUTHORIZED\",\n            \"message\": \"X-Session-Token is invalid\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Вывести заметки",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Session-Token",
+						"value": "wn29ANSMq39",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/notes",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"notes"
+					]
+				},
+				"description": "Вывести заметки. Для выполнения запроса требуется токен авторизации `X-Session-Token` в заголовке.\n\nУспешный запрос возвращает массив заметок пользователя, либо `null`, если их нет."
+			},
+			"response": [
+				{
+					"name": "Корректный запрос",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Session-Token",
+								"value": "wn29ANSMq39",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/notes",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"notes"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 24 Aug 2024 16:12:03 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "511"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"user\": \"Alex\",\n    \"notes\": [\n        \"my note 4\",\n        \"my note 1\",\n        \"my note 1\",\n        \"my note 1\",\n        \"my note 1\",\n        \"адин\",\n        \"адин\",\n        \"адин\",\n        \"адин\",\n        \"адин\",\n        \"адин\",\n        \"адин\",\n        \"адин\",\n        \"адин\",\n        \"адин\",\n        \"12345\",\n        \"Новая заметка\",\n        \"Новая заметка\",\n        \"Новая заметка\",\n        \"Новая заметка\",\n        \"Новая заметка\",\n        \"Новая заметка\",\n        \"Новая заметка\",\n        \"Заметка\"\n    ]\n}"
+				},
+				{
+					"name": "Нет токена авторизации",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Session-Token",
+								"value": "wn29ANSMq39",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/notes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notes"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 24 Aug 2024 16:12:17 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "111"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 401,\n    \"errors\": [\n        {\n            \"code\": \"UNAUTHORIZED\",\n            \"message\": \"X-Session-Token is invalid\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "Неверный токен авторизации",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Session-Token",
+								"value": "555",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/notes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notes"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 24 Aug 2024 16:22:46 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "111"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 401,\n    \"errors\": [\n        {\n            \"code\": \"UNAUTHORIZED\",\n            \"message\": \"X-Session-Token is invalid\"\n        }\n    ]\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1",
+			"disabled": true
+		},
+		{
+			"key": "base_url",
+			"value": "localhost:8080"
+		}
+	]
+}
