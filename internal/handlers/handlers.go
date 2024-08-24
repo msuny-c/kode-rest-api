@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-
 	"github.com/gorilla/context"
 	"github.com/msuny-c/kode-rest-api/internal/database"
 	"github.com/msuny-c/kode-rest-api/internal/helper"
@@ -20,34 +19,34 @@ var spellerCodes = map[int]string{
 }
 
 func CreateNote(w http.ResponseWriter, r *http.Request) {
-	username := context.Get(r, "username").(string)
-	note := context.Get(r, "note").(string)
+    username := context.Get(r, "username").(string)
+    note := context.Get(r, "note").(string)
     typos, err := speller.Text(note)
     if len(typos) != 0 {
     	handleTypos(w, typos)
         return
     }
-	err = database.CreateNote(username, note)
-	if err != nil {
-		log.Errorf("Failed to create note for user %q: %v.", username, err)
-	} else {
-		log.Infof("Created note from user %q.", username)
-		helper.WriteResponse(w, models.Response{Code: http.StatusOK, User: username, Note: note})
-	}
+    err = database.CreateNote(username, note)
+    if err != nil {
+	log.Errorf("Failed to create note for user %q: %v.", username, err)
+    } else {
+	log.Infof("Created note from user %q.", username)
+	helper.WriteResponse(w, models.Response{Code: http.StatusOK, User: username, Note: note})
+    }
 }
 
 func ListNotes(w http.ResponseWriter, r *http.Request) {
-	username := context.Get(r, "username").(string)
-	notes, err := database.ListNotes(username)
-	if err != nil {
-		log.Errorf("Failed to get notes from user %q: %v.", username, err)
-	} else {
-		helper.WriteResponse(w, models.Response{Code: http.StatusOK, User: username, Notes: &notes})
-	}
+    username := context.Get(r, "username").(string)
+    notes, err := database.ListNotes(username)
+    if err != nil {
+	log.Errorf("Failed to get notes from user %q: %v.", username, err)
+    } else {
+	helper.WriteResponse(w, models.Response{Code: http.StatusOK, User: username, Notes: &notes})
+    }
 }
 
 func handleTypos(w http.ResponseWriter, typos []yaspeller.Response) {
-	var errors []models.Error
+    var errors []models.Error
     for _, typo := range typos {
     	errors = append(errors, models.Error{Code: spellerCodes[typo.Code], Message: "Spelling error in word: " + typo.Word})
     }
