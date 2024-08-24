@@ -4,6 +4,7 @@
 - REST API интерфейс, для передачи используется `json`
 - Для логирования используется библиотека [logrus](https://github.com/sirupsen/logrus)
 - Для роутера используется [gorilla](https://github.com/gorilla/mux)
+- Live-reload с помощью [air](https://github.com/air-verse/air)
 - В качестве БД используется Postgresql (запускается в контейнере)
 - Переменные окружения хранятся в файле `.env`
 - Добавляемые заметки проверяются на орфографические ошибки сервисом [Яндекс.Спеллер](https://yandex.ru/dev/speller)
