@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/gorilla/context"
@@ -24,23 +26,26 @@ func (amw *Authentication) Middleware(next http.Handler) http.Handler {
 		} else {
 			log.Warnf("Unsuccessful authentication attempt from %s.", r.RemoteAddr)
 			errors := []models.Error{{Code: "UNAUTHORIZED", Message: "X-Session-Token is invalid"}}
-			helper.WriteError(w, models.ResponseError{Code: http.StatusUnauthorized, Errors: errors})
+			helper.WriteResponse(w, models.Response{Code: http.StatusUnauthorized, Errors: errors})
 		}
 	})
 }
 
 func Notes(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := r.ParseForm()
+		var request models.Request
+		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			log.Errorf("Error occured while parsing body: %v.", err)
+			log.Errorf("Failed to parse request's body: %v", err)
 		}
-		if r.Form.Has("note") {
+		json.Unmarshal(body, &request)
+		if request.Note != "" {
+			context.Set(r, "note", request.Note)
 			next.ServeHTTP(w, r)
 		} else {
 			log.Infof("Required key 'note' was not provided from %s.", r.RemoteAddr)
 			errors := []models.Error{{Code: "BAD REQUEST", Message: "Required key 'note' was not provided"}}
-			helper.WriteError(w, models.ResponseError{Code: http.StatusBadRequest, Errors: errors})
+			helper.WriteResponse(w, models.Response{Code: http.StatusBadRequest, Errors: errors})
 		}
 	})
 }
