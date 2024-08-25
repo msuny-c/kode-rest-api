@@ -19,7 +19,7 @@ func CreateNote(username string, note string) error {
 	return nil
 }
 func ListNotes(username string) ([]string, error) {
-	var notes []string
+	notes := []string{}
 	rows, err := database.Query("SELECT note FROM notes WHERE username = $1", username)
 	if err != nil {
 		return nil, err

@@ -17,7 +17,6 @@ type Authentication struct {
 
 func (amw *Authentication) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
 		token := r.Header.Get("X-Session-Token")
 		if user, found := amw.Tokens[token]; found {
 			log.Infof("Authenticated user: %q.", user)
@@ -26,7 +25,7 @@ func (amw *Authentication) Middleware(next http.Handler) http.Handler {
 		} else {
 			log.Warnf("Unsuccessful authentication attempt from %s.", r.RemoteAddr)
 			errors := []models.Error{{Code: "UNAUTHORIZED", Message: "X-Session-Token is invalid"}}
-			helper.WriteResponse(w, models.Response{Code: http.StatusUnauthorized, Errors: errors})
+			helper.WriteResponse(w, http.StatusBadRequest, models.ResponseError{Errors: errors})
 		}
 	})
 }
@@ -45,7 +44,7 @@ func Notes(next http.Handler) http.Handler {
 		} else {
 			log.Infof("Required key 'note' was not provided from %s.", r.RemoteAddr)
 			errors := []models.Error{{Code: "BAD REQUEST", Message: "Required key 'note' was not provided"}}
-			helper.WriteResponse(w, models.Response{Code: http.StatusBadRequest, Errors: errors})
+			helper.WriteResponse(w, http.StatusBadRequest, models.ResponseError{Errors: errors})
 		}
 	})
 }
