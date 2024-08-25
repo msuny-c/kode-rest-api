@@ -26,7 +26,6 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
     	handleTypos(w, typos)
         return
     }
-<<<<<<< HEAD
 	err = database.CreateNote(username, note)
 	if err != nil {
 		log.Errorf("Failed to create note for user %q: %v.", username, err)
@@ -44,7 +43,6 @@ func ListNotes(w http.ResponseWriter, r *http.Request) {
 	} else {
 		helper.WriteResponse(w, http.StatusOK, models.ResponseNotes{Notes: notes})
 	}
-=======
     err = database.CreateNote(username, note)
     if err != nil {
 	log.Errorf("Failed to create note for user %q: %v.", username, err)
@@ -62,22 +60,15 @@ func ListNotes(w http.ResponseWriter, r *http.Request) {
     } else {
 	helper.WriteResponse(w, models.Response{Code: http.StatusOK, User: username, Notes: &notes})
     }
->>>>>>> b0ea1888b83db4dc7f3ff2f58475389e9baad36a
 }
 	
 func handleTypos(w http.ResponseWriter, typos []yaspeller.Response) {
-<<<<<<< HEAD
 	var errors models.Errors
-=======
     var errors []models.Error
->>>>>>> b0ea1888b83db4dc7f3ff2f58475389e9baad36a
     for _, typo := range typos {
     	errors.Add(spellerCodes[typo.Code], "Spelling error in word: " + typo.Word)
     }
-<<<<<<< HEAD
     helper.WriteResponse(w, http.StatusBadRequest, models.ResponseError{Errors: errors})
 }
-=======
     helper.WriteResponse(w, models.Response{Code: http.StatusBadRequest, Errors: errors})
 }
->>>>>>> b0ea1888b83db4dc7f3ff2f58475389e9baad36a
