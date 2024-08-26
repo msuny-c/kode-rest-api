@@ -46,9 +46,9 @@ func ListNotes(w http.ResponseWriter, r *http.Request) {
 }
 	
 func handleTypos(w http.ResponseWriter, typos []yaspeller.Response) {
-	var errors models.Errors
+	var errors []models.Error
     for _, typo := range typos {
-    	errors.Add(spellerCodes[typo.Code], "Spelling error in word: " + typo.Word)
+    	errors = append(errors, models.Error{Code: spellerCodes[typo.Code], Message: "Spelling error in word: " + typo.Word})
     }
     helper.WriteResponse(w, http.StatusBadRequest, models.ResponseError{Errors: errors})
 }
