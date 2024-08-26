@@ -13,17 +13,11 @@ type ResponseNotes struct {
 }
 
 type ResponseError struct {
-	Errors Errors `json:"errors"`
+	Errors []Error `json:"errors"`
 }
-
-type Errors []Error
 
 type Error struct {
 	Code string `json:"code,omitempty"`
 	Message string `json:"message,omitempty"`
-}
-
-func (errors Errors) Add(code string, message string) {
-	errors = append(errors, Error{Code: code, Message: message})
 }
 
